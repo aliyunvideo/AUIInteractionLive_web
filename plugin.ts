@@ -16,7 +16,7 @@ export default (api: IApi) => {
       </script>`,
       `<link rel="stylesheet" href="https://g.alicdn.com/de/prismplayer/2.13.1/skins/default/aliplayer-min.css" />`,
       `<script charset="utf-8" type="text/javascript" src="https://g.alicdn.com/de/prismplayer/2.13.1/aliplayer-h5-min.js"></script>`,
-      `<script src='https://g.alicdn.com/video-cloud-fe/aliyun-interaction-sdk/1.0.0/aliyun-interaction-sdk.web.min.js'></script>`,
+      `<script src='https://g.alicdn.com/video-cloud-fe/aliyun-interaction-sdk/1.0.1/aliyun-interaction-sdk.web.min.js'></script>`,
     ])
     return $;
   });

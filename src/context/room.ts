@@ -14,6 +14,7 @@ export const defaultRoomState: IRoomState = {
   title: '',
   updatedAt: '',
   notice: '',
+  coverUrl: '',
 
   // 直播间观众数据
   likeCount: 0,
@@ -27,6 +28,9 @@ export const defaultRoomState: IRoomState = {
   hlsUrl: '',
   rtmpUrl: '',
   rtsUrl: '',
+
+  // 回看相关
+  isPlayback: false,
 
   // 互动消息 相关
   messageList: [],

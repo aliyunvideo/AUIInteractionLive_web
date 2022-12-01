@@ -1,14 +1,21 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import Icon from '@ant-design/icons';
+import { ResetSvg } from '@/assets/CustomIcon';
 import { RoomContext } from '@/context/room';
 import styles from './index.less';
 import { LiveService } from '@/services/live';
-import { RoomStatusEnum } from '@/types/room';
+import { RoomStatusEnum, VODStatusEnum } from '@/types/room';
 import { replaceHttps, UA } from '@/utils';
 
-export default function Player() {
-  const { roomState } = useContext(RoomContext);
-  const { rtsUrl, hlsUrl, flvUrl, status } = roomState;
+interface PlayerProps {
+  onReady: () => void;
+}
+
+export default function Player(props: PlayerProps) {
+  const { onReady } = props;
+  const { roomState, dispatch } = useContext(RoomContext);
+  const { rtsUrl, hlsUrl, flvUrl, status, vodInfo, isPlayback } = roomState;
   const { t } = useTranslation();
   const [errorDisplayVisible, setErrorDisplayVisible] = useState(true);
   const isLiving = status === RoomStatusEnum.started;
@@ -22,6 +29,19 @@ export default function Player() {
 
     return TextMap[status];
   }, [status]);
+
+  const allowPlayback = useMemo(() => {
+    if (
+      status === RoomStatusEnum.ended
+      && vodInfo
+      && vodInfo.status === VODStatusEnum.success
+      && vodInfo.playlist[0]
+      && vodInfo.playlist[0].play_url
+    ) {
+      return true;
+    }
+    return false;
+  }, [status, vodInfo]);
 
   const liveService = useMemo(() => (new LiveService()), []);
 
@@ -78,13 +98,44 @@ export default function Player() {
     return dispose;
   }, [isLiving]);
 
+  const playbackSvg = () => {
+    if (!vodInfo || isPlayback) {
+      return;
+    }
+    // 更新context
+    dispatch({
+      type: 'update',
+      payload: { isPlayback: true },
+    });
+
+    // 当前例子直播回看使用第一个播放地址，可根据您业务调整
+    let source = vodInfo.playlist[0].play_url;
+    source = replaceHttps(source);
+
+    liveService.playback({
+      source,
+      format: vodInfo.playlist[0].format,
+    });
+
+    liveService.on('ready', () => {
+      onReady();
+    })
+  };
+
   return (
     <div className={containerClassNames}>
       <div id="player"></div>
-      {!isLiving && (
+      {!isLiving && !isPlayback && (
         <div className={styles.nolive}>
-          <img src="https://img.alicdn.com/imgextra/i1/O1CN01pgziS925R7tXtb86t_!!6000000007522-55-tps-238-127.svg" />
           <span>{statusText}</span>
+          {
+            allowPlayback ? (
+              <div className={styles['nolive-playback']} onClick={playbackSvg}>
+                <Icon component={ResetSvg} />
+                {t('playback')}
+              </div>
+            ) : null
+          }
         </div>
       )}
     </div>

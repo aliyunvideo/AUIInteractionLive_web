@@ -25,9 +25,21 @@ export interface IUserStatus {
 }
 
 export enum RoomStatusEnum {
-  Preparing = 0, // 准备中
-  Streaming = 1, // 已开始
-  Stopped = 2, // 已结束
+  no_data = -1, // 非服务端状态，意思为还未取到数据
+  not_start = 0, // 未开播
+  started = 1, // 已开始
+  ended = 2, // 已结束
+}
+
+export enum VODStatusEnum {
+  preparing = 0, // 准备中
+  success = 1, // 成功
+  fail = 2, // 失败
+}
+
+export interface IVODInfo {
+  status: VODStatusEnum,
+  playlist: any[],
 }
 
 export interface IRoomInfo {
@@ -36,6 +48,8 @@ export interface IRoomInfo {
   chatId: string; // im 聊天组 id
   createdAt: string; // 创建时间
   extends: string; // 额外配置 jsonstring
+  coverUrl: string; // 封面图片
+  notice: string; // 公告
   metrics: IMetricsInfo; // 直播间观众数据
   mode: number; // 直播模式 0-普通直播, 1-连麦直播, 2-PK直播
   pkId: string; // 未知
@@ -46,13 +60,8 @@ export interface IRoomInfo {
   userStatus: IUserStatus;
   // 连麦有的字段
   linkInfo?: ILinkUrlInfo;
-}
-
-export enum RoomStatusEnum {
-  no_data = -1, // 非服务端状态，意思为还未取到数据
-  not_start = 0, // 未开播
-  started = 1, // 已开始
-  ended = 2, // 已结束
+  // vod 回看数据
+  vodInfo?: IVODInfo;
 }
 
 export enum RoomModeEnum {
@@ -80,6 +89,7 @@ export interface IRoomState {
   title: string; // 直播间标题
   updatedAt: string; // 更新时间
   notice: string; // 公告
+  coverUrl: string; // 封面图片
 
   // 直播间观众数据
   likeCount: number; // 点赞数
@@ -93,6 +103,10 @@ export interface IRoomState {
   hlsUrl: string;
   rtmpUrl: string;
   rtsUrl: string;
+
+  // vod 回看数据
+  vodInfo?: IVODInfo;
+  isPlayback: boolean;
 
   // 互动消息 相关
   messageList: InteractionMessage[];

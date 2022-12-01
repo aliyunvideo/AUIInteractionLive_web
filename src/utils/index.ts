@@ -1,4 +1,5 @@
 import { BasicMap } from '@/types/basic';
+import { DefaultAvatars } from './constants';
 
 // 判断当前在哪个platform
 export const UA = (() => {
@@ -178,4 +179,16 @@ export function getParamFromSearch(key: string) {
   const reg = new RegExp(`(^|&)${key}=([^&]*)(&|$)`);
   const result = url.substring(1).match(reg);
   return result ? decodeURIComponent(result[2]) : null;
+}
+
+/**
+ * 根据 userId 首字母取用户头像
+ * @param {string} userId
+ * @return {string} 
+ */
+export function getRandomAvatar(userId: string) {
+  if (!userId) {
+    return DefaultAvatars[0];
+  }
+  return DefaultAvatars[userId.charCodeAt(0) % DefaultAvatars.length];
 }

@@ -4,7 +4,7 @@ export default (api: IApi) => {
   api.modifyHTML(($) => {
     $('head').append([
       '<title>阿里云互动直播</title>',
-      `<link rel="icon" href="https://img.alicdn.com/tfs/TB1_ZXuNcfpK1RjSZFOXXa6nFXa-32-32.ico" type="image/x-icon" />`,
+      `<link rel="shortcut icon" href="https://img.alicdn.com/imgextra/i1/O1CN01v9fSKu1CdfyoY0pdE_!!6000000000104-73-tps-32-32.ico" type="image/x-icon" />`,
     ]);
     $('#root').after([
       // 测试阶段可以打开 vconsole，若是上线阶段了建议不要开启。这里通过判断查询参数中是否有 vconsole=1 来控制是否开启

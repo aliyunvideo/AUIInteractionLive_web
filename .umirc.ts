@@ -12,6 +12,16 @@ export default {
   history: {
     type: 'hash'
   },
+  metas: [
+    {
+      name: 'Viewport',
+      content: 'width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover',
+    },
+    {
+      name: 'description',
+      content: '阿里云互动直播',
+    },
+  ],
   // 路由配置，详细文档请阅读官方文档：https://umijs.org/docs/guides/routes
   routes: [
     {

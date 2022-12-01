@@ -2,13 +2,15 @@ import { useParams, useNavigate } from 'umi';
 import { useEffect, useReducer, useRef, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { throttle } from 'throttle-debounce';
+import { Toast } from 'antd-mobile';
 import MobileRoom from '@/components/MobileRoom';
 import PCRoom from '@/components/PCRoom/demo';
 import services from '@/services';
 import { RoomContext, defaultRoomState, roomReducer } from '@/context/room';
 import { IRoomInfo, InteractionMessage, RoomStatusEnum } from '@/types/room';
 import { CustomMessageTypes, BroadcastTypeEnum } from '@/types/interaction';
-import { createDom, UA, assignObjectByParams } from '@/utils';
+import { createDom, UA, assignObjectByParams, getRandomAvatar } from '@/utils';
+import { LatestLiveidStorageKey } from '@/utils/constants';
 import LikeProcessor from '@/utils/LikeProcessor';
 import '@/styles/anime.less';
 import '@/styles/mobileBullet.less';
@@ -65,6 +67,9 @@ export default function Room() {
     services.getRoomDetail(roomId)
       .then((res: IRoomInfo) => {
         // console.log(res);
+        // 存储直播间 id 至 localstorage ，方便后续从列表页中进入
+        localStorage.setItem(LatestLiveidStorageKey, roomId);
+
         dispatch({
           type: 'updateRoomDetail',
           payload: res,
@@ -85,6 +90,7 @@ export default function Room() {
       await InteractionRef.current.joinGroup({
         groupId,
         userNick: userData.userName,
+        userAvatar: getRandomAvatar(userData.userId), // 随机取头像
         broadCastType: BroadcastTypeEnum.all, // 广播所有人
         broadCastStatistics: true,
       });
@@ -175,12 +181,12 @@ export default function Room() {
       case InteractionMessageTypes.PaaSMuteGroup:
         // 互动消息组被禁言
         updateRoomState({ groupMuted: true, commentInput: '' });
-        addBulletItem(tr('chat_all_banned_start'));
+        Toast.show(tr('chat_all_banned_start'));
         break;
       case InteractionMessageTypes.PaaSCancelMuteGroup:
         // 互动消息组取消禁言
         updateRoomState({ groupMuted: false });
-        addBulletItem(tr('chat_all_banned_stop'));
+        Toast.show(tr('chat_all_banned_stop'));
         break;
       case InteractionMessageTypes.PaaSMuteUser:
         // 个人被禁言
@@ -200,6 +206,13 @@ export default function Room() {
         break;
       case CustomMessageTypes.LiveInfo:
         // 直播间信息更新
+        break;
+      case CustomMessageTypes.NoticeUpdate:
+        // 公告更新
+        if (typeof data.notice === 'string') {
+          updateRoomState({ notice: data.notice });
+          Toast.show(tr('notice_updated'));
+        }
         break;
       default:
         break;
@@ -227,9 +240,9 @@ export default function Room() {
     const data: any = { selfMuted: isMuted };
     if (isMuted) {
       data.commentInput = ''; // 若当前输入框有内容要清空
-      addBulletItem(`${userInfo.userNick || ''}${tr('chat_someone_banned_start')}`);
+      Toast.show(`${userInfo.userNick || ''}${tr('chat_someone_banned_start')}`);
     } else {
-      addBulletItem(`${userInfo.userNick || ''}${tr('chat_someone_banned_stop')}`);
+      Toast.show(`${userInfo.userNick || ''}${tr('chat_someone_banned_stop')}`);
     }
 
     updateRoomState(data);
@@ -270,6 +283,9 @@ export default function Room() {
   };
 
   const sendLike = () => {
+    if (!likeProcessor.animeContainerEl && animeContainerEl.current) {
+      likeProcessor.setAnimeContainerEl(animeContainerEl.current);
+    }
     likeProcessor.send();
   };
 

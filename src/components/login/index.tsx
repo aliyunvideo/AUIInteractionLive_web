@@ -1,10 +1,9 @@
 /**
- * 本组件为测试逻辑，userId 为输入的昵称 md5 得到，具体登录应由你自行实现
- */
-
-import { useState } from 'react';
-import md5 from 'md5';
-import { Toast } from 'antd-mobile';
+ * 本组件为测试逻辑，userId 与输入的昵称一样，方便测试
+ * 实际生产环境的登录由您自行实现
+*/
+import { useState, useMemo } from 'react';
+import { Toast, Input, Button, Dialog } from 'antd-mobile';
 import { useTranslation } from 'react-i18next';
 import services from '@/services';
 import styles from './index.less';
@@ -18,27 +17,37 @@ function Login(props: LoginProps) {
   const { t: tr } = useTranslation();
   const [nickname, setNickname] = useState<string>('');
   const [logging, setLogging] = useState<boolean>(false);
+  const [nickFocus, setNickFocus] = useState<boolean>(false);
+
+  const nickTipClassNames = useMemo(() => {
+    const classNames: string[] = [styles['nick-tip']];
+    if (nickFocus || nickname) {
+      classNames.push('focus');
+    }
+    return classNames.join(' ');
+  }, [nickFocus, nickname]);
 
   const loginClickHandler = () => {
     const userName = nickname.trim();
-    if (!userName) {
+    if (logging) {
       return;
     }
-    if (logging) {
-      Toast.show({
-        content: tr('logging'),
+    if (!/^[a-zA-Z0-9]+$/.test(userName)) {
+      Dialog.alert({
+        content: tr('nickname_error'),
+        confirmText: tr('confirm'),
       });
       return;
     }
     setLogging(true);
 
-    const userId = md5(userName);
+    const userId = userName;
     services.login(userId, userName)
       .then(() => {
         onLoginSuccess();
       })
       .catch((err) => {
-        console.log('登录失败', err);
+        console.log('login fail', err);
         Toast.show({
           icon: 'fail',
           content: tr('login_fail'),
@@ -49,24 +58,42 @@ function Login(props: LoginProps) {
       });
   };
 
+
+
   return (
     <div className={styles['login-page']}>
       <div className={styles['login-form']}>
+        <img
+          src="https://img.alicdn.com/imgextra/i1/O1CN01i8XGei1UJflU9uYSW_!!6000000002497-2-tps-96-64.png"
+          alt="logo"
+          className={styles.logo}
+        />
         <div className={styles['login-title']}>
-          阿里云互动直播
+          {tr('page_title')}
         </div>
-        <div className={styles['login-input']}>
-          <label htmlFor="login-input">昵称</label>
-          <input
-            type="text"
-            id="aui-login-nickname"
-            placeholder="请输入您的昵称..."
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
+        <div className={styles['nick-block']}>
+          <Input
+            clearable
+            id="aui-interaction-live-nickname"
+            autoComplete="off"
+            onChange={(value) => setNickname(value)}
+            onFocus={() => setNickFocus(true)}
+            onBlur={() => setNickFocus(false)}
           />
+          <div className={nickTipClassNames}>{tr('nickname_tip')}</div>
         </div>
-        <div className={styles['login-btn']} onClick={loginClickHandler}>
-          登录
+        <div className={styles['login-btn']}>
+          <Button
+            disabled={!nickname}
+            loading={logging}
+            block
+            color="primary"
+            shape="rounded"
+            size="large"
+            onClick={loginClickHandler}
+          >
+            {tr('enter')}
+          </Button>
         </div>
       </div>
     </div>

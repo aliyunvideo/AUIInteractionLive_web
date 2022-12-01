@@ -17,6 +17,7 @@ export interface PlayerParams {
   playsinline?: boolean;
   skinLayout?: any;
   rePlay?: boolean;
+  format?: string;
   showBuffer?: boolean;
   controlBarVisibility?: string;
   playerShortCuts?: boolean;

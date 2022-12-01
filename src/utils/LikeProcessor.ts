@@ -60,7 +60,7 @@ class LikeProcessor {
     }
     const animeRdm = randomNum(MaxAnameCount, 1);
     const bubble = createDom('div', {
-      class: `bubble anime-${animeRdm}`,
+      class: `bubble anime-${animeRdm} bg${animeRdm}`,
       id: `bubble-${this.likeBubbleCount}`,
     });
     let nowCount = this.likeBubbleCount;

@@ -1,6 +1,15 @@
 {
+  "page_title": "Aliyun Interaction Liveroom",
+  "confirm": "Confirm",
+  "nickname_tip": "Nickname (please enter English letters and numbers)",
+  "nickname_error": "Nickname only supports English letters and numbers.",
+  "enter": "Enter",
   "logging": "Logging in, please wait",
   "login_fail": "Login Failed",
+  "liveroom-list": "Live Room List",
+  "liveroom_empty": "No Live Room",
+  "last-live": "Last Live",
+  "views": "观看",
   "share_success": "Share Successed",
   "share_fail": "Share Failed",
   "liveroom_enter": " entered the channel.",
@@ -15,6 +24,7 @@
   "live_video_load_failed": "Loading failed. Please check related parameters.",
   "liveroom_initing": "The liveroom is initializing.",
   "live_anchor_iscoming": "The streamer is on the way. Please wait a moment.",
+  "playback": "Playback",
   "live_is_ended": "The live is ended~",
   "chat_all_banned_stop": "The streamer unmuted all visitors in the channel.",
   "roomengine_islogining": "Logging On",
@@ -30,6 +40,9 @@
   "already_known": "I Understand",
   "chat_send_failed": "Failed to send the message.",
   "live_room_notice": "Announcement",
+  "live_room_notice_empty": "Announcement empty",
+  "notice_updated": "Notice has been updated",
+  "follow": "follow",
   "cellular_notification": "Make sure that you connect to the stream by using Wi-Fi networks. If you use cellular data networks to access the stream, you will be charged traffic fees.",
   "kicked_from_room": "You have been kicked out of the channel."
 }

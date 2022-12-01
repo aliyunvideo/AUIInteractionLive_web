@@ -4,6 +4,7 @@ export enum CustomMessageTypes {
   LiveStart = 10003, // 开始直播
   LiveStop = 10004, // 结束直播
   LiveInfo = 10005, // 直播间信息
+  NoticeUpdate = 10006, // 公告更新
   ApplyRTC = 20001, // 申请连麦（观众发送、主播接收）
   RespondRTC = 20002, // 同意/拒绝 连麦申请（主播发送，观众接收）
   RTCStart = 20003, // 上麦通知
